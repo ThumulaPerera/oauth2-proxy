@@ -365,7 +365,7 @@ func getAuthorizationHeader() Header {
 		Values: []HeaderValue{
 			{
 				ClaimSource: &ClaimSource{
-					Claim:  "id_token",
+					Claim:  "access_token",
 					Prefix: "Bearer ",
 				},
 			},
