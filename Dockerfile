@@ -48,7 +48,18 @@ COPY nsswitch.conf /etc/nsswitch.conf
 COPY --from=builder /go/src/github.com/oauth2-proxy/oauth2-proxy/oauth2-proxy /bin/oauth2-proxy
 COPY --from=builder /go/src/github.com/oauth2-proxy/oauth2-proxy/jwt_signing_key.pem /etc/ssl/private/jwt_signing_key.pem
 
-# UID/GID 65532 is also known as nonroot user in distroless image
-USER 65532:65532
+# Build arguments for user/group configurations
+ARG USER=wso2ipk
+ARG USER_ID=10001
+ARG USER_GROUP=wso2
+ARG USER_GROUP_ID=10001
+ARG USER_HOME=/home/${USER}
+
+# Create a user group and a user
+RUN addgroup -S -g ${USER_GROUP_ID} ${USER_GROUP} \
+    && adduser -S -D -h ${USER_HOME} -G ${USER_GROUP} -u ${USER_ID} ${USER}
+
+# For Choreo, A valid User ID is a numeric value between 10000-20000
+USER 10001
 
 ENTRYPOINT ["/bin/oauth2-proxy"]
